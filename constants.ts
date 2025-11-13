@@ -1,7 +1,7 @@
 
 import { FishProduct, OpeningHour } from './types';
 
-export const INITIAL_LOGO_URL = 'https://i.imgur.com/Gq6h2rQ.png';
+export const INITIAL_LOGO_URL = '/wilsons-logo.png';
 
 export const FISH_PRODUCTS: FishProduct[] = [
   { id: '1', name: 'Fresh Tassie Scallops', price: '$39.90' },
