@@ -1,17 +1,22 @@
 
 import React, { useState, useEffect } from 'react';
+import { Session } from '@supabase/supabase-js';
 import Header from './components/Header';
 import ProductList from './components/ProductList';
 import Hours from './components/Hours';
 import Footer from './components/Footer';
+import AuthComponent from './components/Auth';
 import { FISH_PRODUCTS, OPENING_HOURS, INITIAL_LOGO_URL } from './constants';
 import { FishProduct } from './types';
+import { supabase } from './src/supabaseClient';
 
 const App: React.FC = () => {
-  const isAdmin = window.location.pathname.startsWith('/admin');
-
+  const [session, setSession] = useState<Session | null>(null);
   const [products, setProducts] = useState<FishProduct[]>([]);
   const [logoUrl, setLogoUrl] = useState<string>(INITIAL_LOGO_URL);
+
+  const onAdminPage = window.location.pathname.startsWith('/admin');
+  const isAdmin = onAdminPage && !!session;
 
   // Load products from localStorage on initial render
   useEffect(() => {
@@ -47,6 +52,21 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // Check for and manage user session
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleLogoChange = (newLogoDataUrl: string) => {
     setLogoUrl(newLogoDataUrl);
     localStorage.setItem('logoUrl', newLogoDataUrl);
@@ -67,6 +87,11 @@ const App: React.FC = () => {
   const handleDeleteProduct = (productId: string) => {
     setProducts(prev => prev.filter(p => p.id !== productId));
   };
+
+  // If on the admin path but not logged in, show the login form
+  if (onAdminPage && !session) {
+    return <AuthComponent />;
+  }
 
   return (
     <div className="min-h-screen bg-sky-50 text-slate-800 font-sans">

@@ -1,6 +1,7 @@
 
 import React, { useRef, useCallback } from 'react';
 import { CameraIcon } from './icons/CameraIcon';
+import { supabase } from '../src/supabaseClient';
 
 interface HeaderProps {
   logoSrc: string;
@@ -32,7 +33,11 @@ const Header: React.FC<HeaderProps> = ({ logoSrc, isAdmin, onLogoChange }) => {
     <header className="bg-white shadow-md">
       {isAdmin && (
         <div className="w-full bg-yellow-300 border-b border-yellow-400 text-yellow-900 text-center p-2 font-semibold text-sm">
-          You are in Admin Mode. | <a href="/" className="underline hover:text-blue-600">View Public Site</a>
+          <span>You are in Admin Mode.</span>
+          <span className="text-yellow-500">|</span>
+          <a href="/" className="underline hover:text-blue-600">View Public Site</a>
+          <span className="text-yellow-500">|</span>
+          <button onClick={() => supabase.auth.signOut()} className="underline hover:text-blue-600 font-semibold">Logout</button>
         </div>
       )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col items-center">
