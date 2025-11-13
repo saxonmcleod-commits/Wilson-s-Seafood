@@ -9,6 +9,7 @@ import AuthComponent from './components/Auth';
 import { FISH_PRODUCTS, OPENING_HOURS, INITIAL_LOGO_URL } from './constants';
 import { FishProduct } from './types';
 import { supabase } from './src/supabaseClient';
+import './index.css';
 
 const App: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null);
